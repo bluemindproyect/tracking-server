@@ -1,13 +1,23 @@
-document.addEventListener("DOMContentLoaded", () => {
-  document.querySelectorAll(".promo-card").forEach(card => {
+document.addEventListener("DOMContentLoaded", function () {
+  const promociones = document.querySelectorAll(".card-promocion");
+
+  promociones.forEach((card) => {
     card.addEventListener("click", () => {
-      fetch("https://<TU_DOMINIO_RENDER>.onrender.com/track", {
+      const nombreCliente = card.getAttribute("data-cliente") || "desconocido";
+      const nombrePromo = card.getAttribute("data-promocion") || "sin_nombre";
+
+      fetch("https://tracking-server-dus4.onrender.com/track", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json"
+        },
         body: JSON.stringify({
-          promo_id: card.dataset.id || "desconocido",
-          client: window.location.hostname
+          cliente: nombreCliente,
+          promocion: nombrePromo,
+          timestamp: new Date().toISOString()
         })
+      }).catch((error) => {
+        console.error("Error al enviar datos de rastreo:", error);
       });
     });
   });
